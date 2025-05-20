@@ -1,0 +1,60 @@
+STATISTICAL TEST RESULTS
+
+========================
+
+Successfully loaded data from 'data/polska_prezydent2025_obkw_kandydaci_NATIONAL_FINAL.csv'.
+
+Number of vote entries considered for Benford's Law (Votes > 0): 354678
+
+
+--- Benford's Law Test for First Digits of 'Votes' ---
+
+Observed vs. Expected Frequencies for First Digits (Benford's Law):
+Digit | Observed Count | Expected Count (Benford) | Observed Prop. | Expected Prop. (Benford)
+------|----------------|--------------------------|----------------|--------------------------
+1     | 112070         | 106768.72                | 0.3160         | 0.3010                  
+2     | 65772          | 62455.70                 | 0.1854         | 0.1761                  
+3     | 46343          | 44313.02                 | 0.1307         | 0.1249                  
+4     | 35037          | 34371.85                 | 0.0988         | 0.0969                  
+5     | 27496          | 28083.85                 | 0.0775         | 0.0792                  
+6     | 22024          | 23744.55                 | 0.0621         | 0.0669                  
+7     | 17905          | 20568.47                 | 0.0505         | 0.0580                  
+8     | 14931          | 18142.67                 | 0.0421         | 0.0512                  
+9     | 13100          | 16229.18                 | 0.0369         | 0.0458                  
+
+
+Chi-squared statistic: 2198.9353
+P-value: 0
+Significance level (alpha): 0.05
+Result: The p-value (0) is less than alpha (0.05).
+We reject the null hypothesis. The observed distribution of first digits significantly deviates from Benford's Law.
+
+This could indicate anomalies, data manipulation, or that the dataset naturally does not follow Benford's Law.
+
+
+--- Chi-squared Goodness-of-Fit Test (General Concept) ---
+
+The Chi-squared goodness-of-fit test is used to determine if an observed frequency distribution
+of a categorical variable matches an expected (theoretical) frequency distribution.
+
+Null Hypothesis (H0): The observed frequencies are consistent with the expected frequencies.
+Alternative Hypothesis (Ha): The observed frequencies are NOT consistent with the expected frequencies.
+
+To perform this test, you need:
+1. Observed frequencies (O_i) for each category.
+2. Expected frequencies (E_i) for each category, based on your hypothesis.
+
+The test statistic is calculated as: Chi^2 = sum_over_all_categories [ (O_i - E_i)^2 / E_i ]
+
+The Benford's Law test performed above is a specific application of the Chi-squared goodness-of-fit test,
+where the 'categories' are the first digits (1-9) and the 'expected frequencies' are derived from Benford's Law.
+
+Example of another potential application (requires defining expected distribution):
+If you hypothesized that votes for a *particular candidate* should be uniformly distributed across, say,
+10 equally sized polling stations (which is a strong and often unrealistic assumption), you would:
+  - Observe the votes for that candidate in each of the 10 stations.
+  - Calculate the total votes for that candidate across these 10 stations.
+  - The expected votes for each station would be (Total Votes / 10).
+  - Then apply the Chi-squared test with these observed and expected counts.
+
+The key is defining a meaningful 'expected distribution' for your specific research question.

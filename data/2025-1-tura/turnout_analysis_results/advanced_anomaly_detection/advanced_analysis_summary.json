@@ -1,0 +1,20 @@
+{
+    "pca": {
+        "n_components_selected": 4,
+        "explained_variance_ratio_per_component": [
+            0.5956377303599545,
+            0.15154471735655434,
+            0.1334561072786074,
+            0.0854317097242018
+        ],
+        "total_explained_variance": 0.9660702647193179
+    },
+    "one_class_svm": {
+        "outliers_count": 1581
+    },
+    "sklearn_autoencoder": {
+        "outliers_count": 1580,
+        "reconstruction_error_threshold": 0.43439767578876903,
+        "threshold_percentile": 95
+    }
+}

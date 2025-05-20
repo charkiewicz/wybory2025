@@ -1,0 +1,266 @@
+--- Analysis for: Overall All Votes ---
+Total vote entries analyzed: 410670
+Observed Frequencies:
+  Digit 0: 0.1958 (Count: 80394)
+  Digit 1: 0.1465 (Count: 60150)
+  Digit 2: 0.1163 (Count: 47752)
+  Digit 3: 0.0995 (Count: 40867)
+  Digit 4: 0.0881 (Count: 36166)
+  Digit 5: 0.0811 (Count: 33311)
+  Digit 6: 0.0749 (Count: 30769)
+  Digit 7: 0.0701 (Count: 28802)
+  Digit 8: 0.0653 (Count: 26836)
+  Digit 9: 0.0624 (Count: 25623)
+Expected Frequency per Digit: 0.10
+Chi-squared Statistic: 66651.95670489687
+Chi-squared P-value: 0.0
+Chi-squared Conclusion: P-value < 0.05. The observed last digit distribution significantly deviates from a uniform distribution.
+Plot saved to: data/last_digit_analysis_results\last_digit_distribution_overall_all_votes.png
+
+--- Analysis for: Candidate_BARTOSZEWICZ_Artur ---
+Total vote entries analyzed: 31590
+Observed Frequencies:
+  Digit 0: 0.2333 (Count: 7371)
+  Digit 1: 0.1944 (Count: 6141)
+  Digit 2: 0.1553 (Count: 4906)
+  Digit 3: 0.1201 (Count: 3795)
+  Digit 4: 0.0896 (Count: 2829)
+  Digit 5: 0.0694 (Count: 2193)
+  Digit 6: 0.0525 (Count: 1660)
+  Digit 7: 0.0382 (Count: 1207)
+  Digit 8: 0.0281 (Count: 888)
+  Digit 9: 0.0190 (Count: 600)
+Expected Frequency per Digit: 0.10
+Chi-squared Statistic: 15478.017094017096
+Chi-squared P-value: 0.0
+Chi-squared Conclusion: P-value < 0.05. The observed last digit distribution significantly deviates from a uniform distribution.
+Plot saved to: data/last_digit_analysis_results\per_candidate\last_digit_distribution_candidate_bartoszewicz_artur.png
+
+--- Analysis for: Candidate_BIEJAT_Magdalena_Agnieszka ---
+Total vote entries analyzed: 31590
+Observed Frequencies:
+  Digit 0: 0.1082 (Count: 3419)
+  Digit 1: 0.1138 (Count: 3594)
+  Digit 2: 0.1074 (Count: 3392)
+  Digit 3: 0.1082 (Count: 3418)
+  Digit 4: 0.1055 (Count: 3334)
+  Digit 5: 0.0991 (Count: 3132)
+  Digit 6: 0.0947 (Count: 2992)
+  Digit 7: 0.0907 (Count: 2865)
+  Digit 8: 0.0880 (Count: 2781)
+  Digit 9: 0.0843 (Count: 2663)
+Expected Frequency per Digit: 0.10
+Chi-squared Statistic: 288.94396961063626
+Chi-squared P-value: 5.764851532999241e-57
+Chi-squared Conclusion: P-value < 0.05. The observed last digit distribution significantly deviates from a uniform distribution.
+Plot saved to: data/last_digit_analysis_results\per_candidate\last_digit_distribution_candidate_biejat_magdalena_agnieszka.png
+
+--- Analysis for: Candidate_BRAUN_Grzegorz_Micha ---
+Total vote entries analyzed: 31590
+Observed Frequencies:
+  Digit 0: 0.1133 (Count: 3580)
+  Digit 1: 0.1073 (Count: 3390)
+  Digit 2: 0.1061 (Count: 3352)
+  Digit 3: 0.0997 (Count: 3148)
+  Digit 4: 0.0961 (Count: 3035)
+  Digit 5: 0.0999 (Count: 3157)
+  Digit 6: 0.0967 (Count: 3056)
+  Digit 7: 0.0937 (Count: 2960)
+  Digit 8: 0.0945 (Count: 2985)
+  Digit 9: 0.0927 (Count: 2927)
+Expected Frequency per Digit: 0.10
+Chi-squared Statistic: 132.2133586578031
+Chi-squared P-value: 4.1562136891407016e-24
+Chi-squared Conclusion: P-value < 0.05. The observed last digit distribution significantly deviates from a uniform distribution.
+Plot saved to: data/last_digit_analysis_results\per_candidate\last_digit_distribution_candidate_braun_grzegorz_micha.png
+
+--- Analysis for: Candidate_HOOWNIA_Szymon_Franciszek ---
+Total vote entries analyzed: 31590
+Observed Frequencies:
+  Digit 0: 0.1060 (Count: 3349)
+  Digit 1: 0.1054 (Count: 3329)
+  Digit 2: 0.1033 (Count: 3262)
+  Digit 3: 0.1020 (Count: 3222)
+  Digit 4: 0.1025 (Count: 3239)
+  Digit 5: 0.1008 (Count: 3184)
+  Digit 6: 0.0978 (Count: 3088)
+  Digit 7: 0.0983 (Count: 3104)
+  Digit 8: 0.0954 (Count: 3014)
+  Digit 9: 0.0886 (Count: 2799)
+Expected Frequency per Digit: 0.10
+Chi-squared Statistic: 77.64925609370054
+Chi-squared P-value: 4.729245365190371e-13
+Chi-squared Conclusion: P-value < 0.05. The observed last digit distribution significantly deviates from a uniform distribution.
+Plot saved to: data/last_digit_analysis_results\per_candidate\last_digit_distribution_candidate_hoownia_szymon_franciszek.png
+
+--- Analysis for: Candidate_JAKUBIAK_Marek ---
+Total vote entries analyzed: 31590
+Observed Frequencies:
+  Digit 0: 0.1628 (Count: 5143)
+  Digit 1: 0.1613 (Count: 5097)
+  Digit 2: 0.1423 (Count: 4495)
+  Digit 3: 0.1211 (Count: 3827)
+  Digit 4: 0.1028 (Count: 3247)
+  Digit 5: 0.0880 (Count: 2780)
+  Digit 6: 0.0765 (Count: 2416)
+  Digit 7: 0.0584 (Count: 1846)
+  Digit 8: 0.0462 (Count: 1460)
+  Digit 9: 0.0405 (Count: 1279)
+Expected Frequency per Digit: 0.10
+Chi-squared Statistic: 5942.267806267806
+Chi-squared P-value: 0.0
+Chi-squared Conclusion: P-value < 0.05. The observed last digit distribution significantly deviates from a uniform distribution.
+Plot saved to: data/last_digit_analysis_results\per_candidate\last_digit_distribution_candidate_jakubiak_marek.png
+
+--- Analysis for: Candidate_MACIAK_Maciej ---
+Total vote entries analyzed: 31590
+Observed Frequencies:
+  Digit 0: 0.4533 (Count: 14320)
+  Digit 1: 0.2623 (Count: 8287)
+  Digit 2: 0.1388 (Count: 4384)
+  Digit 3: 0.0743 (Count: 2346)
+  Digit 4: 0.0372 (Count: 1174)
+  Digit 5: 0.0184 (Count: 581)
+  Digit 6: 0.0091 (Count: 286)
+  Digit 7: 0.0039 (Count: 124)
+  Digit 8: 0.0018 (Count: 57)
+  Digit 9: 0.0010 (Count: 31)
+Expected Frequency per Digit: 0.10
+Chi-squared Statistic: 63464.4982589427
+Chi-squared P-value: 0.0
+Chi-squared Conclusion: P-value < 0.05. The observed last digit distribution significantly deviates from a uniform distribution.
+Plot saved to: data/last_digit_analysis_results\per_candidate\last_digit_distribution_candidate_maciak_maciej.png
+
+--- Analysis for: Candidate_MENTZEN_Sawomir_Jerzy ---
+Total vote entries analyzed: 31590
+Observed Frequencies:
+  Digit 0: 0.1101 (Count: 3478)
+  Digit 1: 0.1079 (Count: 3408)
+  Digit 2: 0.1043 (Count: 3294)
+  Digit 3: 0.1018 (Count: 3217)
+  Digit 4: 0.0975 (Count: 3080)
+  Digit 5: 0.0975 (Count: 3080)
+  Digit 6: 0.0936 (Count: 2958)
+  Digit 7: 0.0968 (Count: 3058)
+  Digit 8: 0.0933 (Count: 2946)
+  Digit 9: 0.0972 (Count: 3071)
+Expected Frequency per Digit: 0.10
+Chi-squared Statistic: 95.45679012345677
+Chi-squared P-value: 1.3008599993454115e-16
+Chi-squared Conclusion: P-value < 0.05. The observed last digit distribution significantly deviates from a uniform distribution.
+Plot saved to: data/last_digit_analysis_results\per_candidate\last_digit_distribution_candidate_mentzen_sawomir_jerzy.png
+
+--- Analysis for: Candidate_NAWROCKI_Karol_Tadeusz ---
+Total vote entries analyzed: 31590
+Observed Frequencies:
+  Digit 0: 0.1007 (Count: 3182)
+  Digit 1: 0.0970 (Count: 3063)
+  Digit 2: 0.1001 (Count: 3162)
+  Digit 3: 0.1009 (Count: 3187)
+  Digit 4: 0.0999 (Count: 3157)
+  Digit 5: 0.0985 (Count: 3111)
+  Digit 6: 0.1007 (Count: 3181)
+  Digit 7: 0.1027 (Count: 3243)
+  Digit 8: 0.1002 (Count: 3166)
+  Digit 9: 0.0993 (Count: 3138)
+Expected Frequency per Digit: 0.10
+Chi-squared Statistic: 6.608420386198163
+Chi-squared P-value: 0.6778141400645252
+Chi-squared Conclusion: P-value >= 0.05. Cannot reject the null hypothesis; the observed distribution is consistent with a uniform distribution.
+Plot saved to: data/last_digit_analysis_results\per_candidate\last_digit_distribution_candidate_nawrocki_karol_tadeusz.png
+
+--- Analysis for: Candidate_SENYSZYN_Joanna ---
+Total vote entries analyzed: 31590
+Observed Frequencies:
+  Digit 0: 0.1551 (Count: 4901)
+  Digit 1: 0.1565 (Count: 4945)
+  Digit 2: 0.1392 (Count: 4397)
+  Digit 3: 0.1186 (Count: 3745)
+  Digit 4: 0.1018 (Count: 3216)
+  Digit 5: 0.0877 (Count: 2769)
+  Digit 6: 0.0722 (Count: 2282)
+  Digit 7: 0.0669 (Count: 2112)
+  Digit 8: 0.0545 (Count: 1721)
+  Digit 9: 0.0475 (Count: 1502)
+Expected Frequency per Digit: 0.10
+Chi-squared Statistic: 4727.628996517886
+Chi-squared P-value: 0.0
+Chi-squared Conclusion: P-value < 0.05. The observed last digit distribution significantly deviates from a uniform distribution.
+Plot saved to: data/last_digit_analysis_results\per_candidate\last_digit_distribution_candidate_senyszyn_joanna.png
+
+--- Analysis for: Candidate_STANOWSKI_Krzysztof_Jakub ---
+Total vote entries analyzed: 31590
+Observed Frequencies:
+  Digit 0: 0.1544 (Count: 4876)
+  Digit 1: 0.1444 (Count: 4562)
+  Digit 2: 0.1274 (Count: 4026)
+  Digit 3: 0.1145 (Count: 3616)
+  Digit 4: 0.0992 (Count: 3133)
+  Digit 5: 0.0921 (Count: 2909)
+  Digit 6: 0.0795 (Count: 2511)
+  Digit 7: 0.0689 (Count: 2175)
+  Digit 8: 0.0631 (Count: 1992)
+  Digit 9: 0.0567 (Count: 1790)
+Expected Frequency per Digit: 0.10
+Chi-squared Statistic: 3344.229819563153
+Chi-squared P-value: 0.0
+Chi-squared Conclusion: P-value < 0.05. The observed last digit distribution significantly deviates from a uniform distribution.
+Plot saved to: data/last_digit_analysis_results\per_candidate\last_digit_distribution_candidate_stanowski_krzysztof_jakub.png
+
+--- Analysis for: Candidate_TRZASKOWSKI_Rafa_Kazimierz ---
+Total vote entries analyzed: 31590
+Observed Frequencies:
+  Digit 0: 0.0987 (Count: 3117)
+  Digit 1: 0.1013 (Count: 3199)
+  Digit 2: 0.0988 (Count: 3122)
+  Digit 3: 0.1006 (Count: 3178)
+  Digit 4: 0.1021 (Count: 3225)
+  Digit 5: 0.1007 (Count: 3182)
+  Digit 6: 0.1009 (Count: 3189)
+  Digit 7: 0.0998 (Count: 3152)
+  Digit 8: 0.0978 (Count: 3091)
+  Digit 9: 0.0992 (Count: 3135)
+Expected Frequency per Digit: 0.10
+Chi-squared Statistic: 5.105413105413105
+Chi-squared P-value: 0.8250239796554482
+Chi-squared Conclusion: P-value >= 0.05. Cannot reject the null hypothesis; the observed distribution is consistent with a uniform distribution.
+Plot saved to: data/last_digit_analysis_results\per_candidate\last_digit_distribution_candidate_trzaskowski_rafa_kazimierz.png
+
+--- Analysis for: Candidate_WOCH_Marek_Marian ---
+Total vote entries analyzed: 31590
+Observed Frequencies:
+  Digit 0: 0.6270 (Count: 19806)
+  Digit 1: 0.2455 (Count: 7755)
+  Digit 2: 0.0852 (Count: 2690)
+  Digit 3: 0.0287 (Count: 907)
+  Digit 4: 0.0084 (Count: 264)
+  Digit 5: 0.0035 (Count: 111)
+  Digit 6: 0.0009 (Count: 28)
+  Digit 7: 0.0005 (Count: 16)
+  Digit 8: 0.0002 (Count: 5)
+  Digit 9: 0.0003 (Count: 8)
+Expected Frequency per Digit: 0.10
+Chi-squared Statistic: 114202.83190883191
+Chi-squared P-value: 0.0
+Chi-squared Conclusion: P-value < 0.05. The observed last digit distribution significantly deviates from a uniform distribution.
+Plot saved to: data/last_digit_analysis_results\per_candidate\last_digit_distribution_candidate_woch_marek_marian.png
+
+--- Analysis for: Candidate_ZANDBERG_Adrian_Tadeusz ---
+Total vote entries analyzed: 31590
+Observed Frequencies:
+  Digit 0: 0.1219 (Count: 3852)
+  Digit 1: 0.1070 (Count: 3380)
+  Digit 2: 0.1035 (Count: 3270)
+  Digit 3: 0.1032 (Count: 3261)
+  Digit 4: 0.1023 (Count: 3233)
+  Digit 5: 0.0988 (Count: 3122)
+  Digit 6: 0.0988 (Count: 3122)
+  Digit 7: 0.0931 (Count: 2940)
+  Digit 8: 0.0864 (Count: 2730)
+  Digit 9: 0.0848 (Count: 2680)
+Expected Frequency per Digit: 0.10
+Chi-squared Statistic: 323.35295979740425
+Chi-squared P-value: 2.876481535840973e-64
+Chi-squared Conclusion: P-value < 0.05. The observed last digit distribution significantly deviates from a uniform distribution.
+Plot saved to: data/last_digit_analysis_results\per_candidate\last_digit_distribution_candidate_zandberg_adrian_tadeusz.png
+

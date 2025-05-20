@@ -1,0 +1,25 @@
+{
+    "descriptive_statistics": {
+        "count": 31590.0,
+        "mean": 64.41989038436608,
+        "std": 10.082057351237758,
+        "min": 0.0,
+        "25%": 59.143968871595334,
+        "50%": 65.05376344086021,
+        "75%": 70.63839525750883,
+        "max": 100.0,
+        "median": 65.05376344086021
+    },
+    "shapiro_wilk_test": {
+        "notes": "Note: For N > 5000, computed p-value may be less accurate or test slow. Using a random sample of 5000.",
+        "sample_size_used": 5000,
+        "statistic": 0.9443309909586277,
+        "p_value": 7.275860668509992e-40,
+        "conclusion (alpha=0.05)": "Sample does not look normally distributed (reject H0)"
+    },
+    "kolmogorov_smirnov_test": {
+        "statistic": 0.05103034469606388,
+        "p_value": 6.198156466359252e-72,
+        "conclusion (alpha=0.05)": "Sample does not look normally distributed (reject H0)"
+    }
+}
