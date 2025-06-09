@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from matplotlib.patches import Rectangle
 
 # --- Configuration (same as before) ---
 FILE_R1_KANDYDACI = "data/polska_prezydent2025_obkw_kandydaci_NATIONAL_FINAL.csv"
@@ -24,287 +25,227 @@ NEW_VOTER_DISTRIBUTION = {
     CANDIDATE_TRZASKOWSKI: 0.60,
     CANDIDATE_NAWROCKI: 0.40
 }
-GEO_COLS_FOR_AGG = ['Wojewodztwo_Name', 'Powiat_MnpP_Name', 'Gmina_Name'] # Key for aggregation
+ADDRESS_KEY_COL = 'Address_Key'
+GEO_COLS_BASE = ['Wojewodztwo_Name', 'Powiat_MnpP_Name', 'Gmina_Name']
+GEO_COLS_FOR_AGG = GEO_COLS_BASE + [ADDRESS_KEY_COL]
 R1_SUMMARY_VOTES_COL = 'liczba_glosow_waznych_na_kandydatow'
 R2_SUMMARY_VOTES_COL = 'liczba_glosow_waznych_na_kandydatow'
 
 # --- Helper Functions ---
 
 def load_and_prepare_data():
-    # ... (same as before)
     try:
-        r1_kandydaci_df = pd.read_csv(FILE_R1_KANDYDACI)
+        r1_kandaci_df = pd.read_csv(FILE_R1_KANDYDACI)
         r1_podsumowanie_df = pd.read_csv(FILE_R1_PODSUMOWANIE)
-        r2_kandydaci_df = pd.read_csv(FILE_R2_KANDYDACI)
+        r2_kandaci_df = pd.read_csv(FILE_R2_KANDYDACI)
         r2_podsumowanie_df = pd.read_csv(FILE_R2_PODSUMOWANIE)
     except FileNotFoundError as e:
         print(f"Error: File not found. Please check file paths. Missing file: {e.filename}")
-        return None, None, None, None
-    if r1_kandydaci_df.empty or r1_podsumowanie_df.empty or r2_kandydaci_df.empty or r2_podsumowanie_df.empty:
-        print("Error: One or more data files are empty.")
-        return None, None, None, None
-    return r1_kandydaci_df, r1_podsumowanie_df, r2_kandydaci_df, r2_podsumowanie_df
+        return None, None
+        
+    # --- FIX 1: Clean the R2 Summary DataFrame ---
+    # Filter out malformed header/summary rows that are not actual polling stations.
+    # The 'na=False' ensures that any NaN values in the address column are not considered matches.
+    r2_podsumowanie_df = r2_podsumowanie_df[
+        ~r2_podsumowanie_df['Commission_Address_Raw'].str.contains("Wybory Prezydenta", na=False)
+    ].copy()
 
+    # --- FIX 2: Enforce numeric types on crucial columns to prevent silent errors ---
+    # Coerce errors will turn any non-numeric values (from bad rows) into NaN.
+    # This prevents the whole column from being treated as text ('object').
+    r1_kandaci_df['Votes'] = pd.to_numeric(r1_kandaci_df['Votes'], errors='coerce')
+    r2_kandaci_df['Votes'] = pd.to_numeric(r2_kandaci_df['Votes'], errors='coerce')
+    r1_podsumowanie_df[R1_SUMMARY_VOTES_COL] = pd.to_numeric(r1_podsumowanie_df[R1_SUMMARY_VOTES_COL], errors='coerce')
+    r2_podsumowanie_df[R2_SUMMARY_VOTES_COL] = pd.to_numeric(r2_podsumowanie_df[R2_SUMMARY_VOTES_COL], errors='coerce')
 
-def process_r1_votes_for_expected(r1_kandydaci_df, r1_podsumowanie_df):
-    # This function calculates expected votes at URL_ID level first
-    # It will be aggregated later in main
-    # GEO_COLS includes URL_ID for this stage
-    temp_geo_cols = GEO_COLS_FOR_AGG + ['URL_ID']
-    r1_votes_agg = r1_kandydaci_df.groupby(['URL_ID', 'Candidate'])['Votes'].sum().unstack(fill_value=0)
-    all_r1_candidate_names = r1_kandydaci_df['Candidate'].unique().tolist()
-    for cand_name in all_r1_candidate_names:
-        if cand_name not in r1_votes_agg.columns:
-            r1_votes_agg[cand_name] = 0
-    r1_votes_agg = r1_votes_agg.reset_index()
+    # Drop any rows where the conversion to numeric failed
+    r1_kandaci_df.dropna(subset=['Votes'], inplace=True)
+    r2_kandaci_df.dropna(subset=['Votes'], inplace=True)
+    r1_podsumowanie_df.dropna(subset=[R1_SUMMARY_VOTES_COL], inplace=True)
+    r2_podsumowanie_df.dropna(subset=[R2_SUMMARY_VOTES_COL], inplace=True)
 
-    # Ensure all geo columns are present in r1_podsumowanie_df
-    r1_summary_geo_cols = [col for col in temp_geo_cols if col in r1_podsumowanie_df.columns]
-    r1_summary_selected = r1_podsumowanie_df[r1_summary_geo_cols + [R1_SUMMARY_VOTES_COL]].copy()
-    r1_summary_selected.rename(columns={R1_SUMMARY_VOTES_COL: 'R1_Total_Valid_Votes_Station'}, inplace=True)
+    if r1_kandaci_df.empty or r1_podsumowanie_df.empty or r2_kandaci_df.empty or r2_podsumowanie_df.empty:
+        print("Error: One or more data files are empty after cleaning.")
+        return None, None
+
+    # Merge candidate votes with address and summary data
+    cols_to_add_from_summary = ['URL_ID', 'Commission_Address_Raw']
+    r1_podsumowanie_to_merge = r1_podsumowanie_df[cols_to_add_from_summary + [R1_SUMMARY_VOTES_COL]].copy()
+    r2_podsumowanie_to_merge = r2_podsumowanie_df[cols_to_add_from_summary + [R2_SUMMARY_VOTES_COL]].copy()
     
-    r1_processed_df = pd.merge(r1_summary_selected, r1_votes_agg, on='URL_ID', how='left')
-    candidate_vote_cols = [col for col in all_r1_candidate_names] # all_r1_candidate_names already from unstack
-    r1_processed_df[candidate_vote_cols] = r1_processed_df[candidate_vote_cols].fillna(0)
-    r1_processed_df['R1_Total_Valid_Votes_Station'] = r1_processed_df['R1_Total_Valid_Votes_Station'].fillna(0)
+    # Merge R1 data
+    r1_full_df = pd.merge(r1_kandaci_df, r1_podsumowanie_to_merge, on='URL_ID', how='left')
     
-    # Calculate expected votes at station level
-    df_calc = r1_processed_df.copy()
+    # Merge R2 data
+    r2_full_df = pd.merge(r2_kandaci_df, r2_podsumowanie_to_merge, on='URL_ID', how='left')
+    
+    # Create the stable Address Key on the now-complete dataframes
+    add_and_clean_address_key(r1_full_df)
+    add_and_clean_address_key(r2_full_df)
+    print("Data loaded, cleaned, and enriched with geographic information.")
+    
+    return r1_full_df, r2_full_df
+
+def add_and_clean_address_key(df):
+    """Creates a cleaned, lowercase, stripped address key for stable merging."""
+    df[ADDRESS_KEY_COL] = df['Commission_Address_Raw'].astype(str).str.lower().str.strip()
+    return df
+
+def process_r1_and_calculate_expected_address_votes(r1_full_df):
+    """Aggregates R1 votes at the Address level and calculates expected R2 votes."""
+    r1_address_votes = r1_full_df.groupby(GEO_COLS_FOR_AGG + ['Candidate'])['Votes'].sum().unstack(fill_value=0)
+    
+    all_r1_candidates = list(r1_full_df['Candidate'].unique())
+    for cand in all_r1_candidates:
+        if cand not in r1_address_votes.columns:
+            r1_address_votes[cand] = 0
+
+    df_calc = r1_address_votes.copy()
     df_calc['Expected_Nawrocki_R2'] = 0.0
     df_calc['Expected_Trzaskowski_R2'] = 0.0
-    if CANDIDATE_NAWROCKI in df_calc.columns:
-         df_calc['Expected_Nawrocki_R2'] += df_calc[CANDIDATE_NAWROCKI]
-    if CANDIDATE_TRZASKOWSKI in df_calc.columns:
-         df_calc['Expected_Trzaskowski_R2'] += df_calc[CANDIDATE_TRZASKOWSKI]
+
+    if CANDIDATE_NAWROCKI in df_calc.columns: df_calc['Expected_Nawrocki_R2'] += df_calc[CANDIDATE_NAWROCKI]
+    if CANDIDATE_TRZASKOWSKI in df_calc.columns: df_calc['Expected_Trzaskowski_R2'] += df_calc[CANDIDATE_TRZASKOWSKI]
+
     for r1_cand, transfers in TRANSFER_RULES.items():
         if r1_cand in df_calc.columns:
             df_calc['Expected_Nawrocki_R2'] += df_calc[r1_cand] * transfers.get(CANDIDATE_NAWROCKI, 0.0)
             df_calc['Expected_Trzaskowski_R2'] += df_calc[r1_cand] * transfers.get(CANDIDATE_TRZASKOWSKI, 0.0)
-    other_r1_candidates = [
-        cand for cand in all_r1_candidate_names
-        if cand not in R2_FINALISTS_FROM_R1 and cand not in SPECIFIED_TRANSFER_CANDIDATES_R1
-    ]
-    df_calc['Other_R1_Votes_Sum'] = 0.0 # ensure float
-    for cand in other_r1_candidates:
-        if cand in df_calc.columns:
-            df_calc['Other_R1_Votes_Sum'] += df_calc[cand]
-    df_calc['Expected_Nawrocki_R2'] += df_calc['Other_R1_Votes_Sum'] * 0.50
-    df_calc['Expected_Trzaskowski_R2'] += df_calc['Other_R1_Votes_Sum'] * 0.50
+            
+    other_r1_candidates = [cand for cand in all_r1_candidates if cand not in R2_FINALISTS_FROM_R1 and cand not in SPECIFIED_TRANSFER_CANDIDATES_R1]
+    existing_other_cands = [c for c in other_r1_candidates if c in df_calc.columns]
+    if existing_other_cands:
+        df_calc['Other_R1_Votes_Sum'] = df_calc[existing_other_cands].sum(axis=1)
+        df_calc['Expected_Nawrocki_R2'] += df_calc['Other_R1_Votes_Sum'] * 0.50
+        df_calc['Expected_Trzaskowski_R2'] += df_calc['Other_R1_Votes_Sum'] * 0.50
     
-    return df_calc # Returns station-level expected votes, R1 totals, and geo_cols
+    return df_calc[['Expected_Nawrocki_R2', 'Expected_Trzaskowski_R2']].reset_index()
 
-def calculate_new_voters_at_gmina(r1_podsumowanie_df, r2_podsumowanie_df):
-    """Calculates new voters by comparing R1 and R2 total valid votes at Gmina level."""
-    r1_gmina_totals = r1_podsumowanie_df.groupby(GEO_COLS_FOR_AGG)[R1_SUMMARY_VOTES_COL].sum().reset_index()
-    r1_gmina_totals.rename(columns={R1_SUMMARY_VOTES_COL: 'R1_Total_Valid_Votes_Gmina'}, inplace=True)
+def calculate_new_voters_at_address(r1_full_df, r2_full_df):
+    """Calculates new voters by comparing R1 and R2 total valid votes at Address level."""
+    r1_station_totals = r1_full_df.drop_duplicates(subset=['URL_ID'])
+    r1_address_totals = r1_station_totals.groupby(GEO_COLS_FOR_AGG)[R1_SUMMARY_VOTES_COL].sum().reset_index()
+    r1_address_totals.rename(columns={R1_SUMMARY_VOTES_COL: 'R1_Total_Valid_Votes_Addr'}, inplace=True)
 
-    r2_gmina_totals = r2_podsumowanie_df.groupby(GEO_COLS_FOR_AGG)[R2_SUMMARY_VOTES_COL].sum().reset_index()
-    r2_gmina_totals.rename(columns={R2_SUMMARY_VOTES_COL: 'R2_Total_Valid_Votes_Gmina'}, inplace=True)
+    r2_station_totals = r2_full_df.drop_duplicates(subset=['URL_ID'])
+    r2_address_totals = r2_station_totals.groupby(GEO_COLS_FOR_AGG)[R2_SUMMARY_VOTES_COL].sum().reset_index()
+    r2_address_totals.rename(columns={R2_SUMMARY_VOTES_COL: 'R2_Total_Valid_Votes_Addr'}, inplace=True)
 
-    gmina_summary = pd.merge(r1_gmina_totals, r2_gmina_totals, on=GEO_COLS_FOR_AGG, how='outer')
-    gmina_summary['R1_Total_Valid_Votes_Gmina'] = gmina_summary['R1_Total_Valid_Votes_Gmina'].fillna(0)
-    gmina_summary['R2_Total_Valid_Votes_Gmina'] = gmina_summary['R2_Total_Valid_Votes_Gmina'].fillna(0)
+    address_summary = pd.merge(r1_address_totals, r2_address_totals, on=GEO_COLS_FOR_AGG, how='outer')
+    address_summary.fillna(0, inplace=True)
 
-    net_new_voters_gmina = gmina_summary['R2_Total_Valid_Votes_Gmina'] - gmina_summary['R1_Total_Valid_Votes_Gmina']
-    gmina_summary['Actual_New_Voters_Gmina'] = net_new_voters_gmina.clip(lower=0)
+    net_new_voters = address_summary['R2_Total_Valid_Votes_Addr'] - address_summary['R1_Total_Valid_Votes_Addr']
+    address_summary['Actual_New_Voters_Addr'] = net_new_voters.clip(lower=0)
     
-    return gmina_summary[GEO_COLS_FOR_AGG + ['R1_Total_Valid_Votes_Gmina', 'R2_Total_Valid_Votes_Gmina', 'Actual_New_Voters_Gmina']]
+    return address_summary
 
-
-def aggregate_expected_votes_to_gmina(expected_votes_station_df, new_voters_gmina_df):
-    """Aggregates station-level expected votes to Gmina and adds new voter share."""
-    gmina_expected = expected_votes_station_df.groupby(GEO_COLS_FOR_AGG)[
-        ['Expected_Nawrocki_R2', 'Expected_Trzaskowski_R2']
-    ].sum().reset_index()
-
-    # Merge with Gmina-level new voter data
-    gmina_expected = pd.merge(gmina_expected, new_voters_gmina_df, on=GEO_COLS_FOR_AGG, how='left')
-    gmina_expected['Actual_New_Voters_Gmina'] = gmina_expected['Actual_New_Voters_Gmina'].fillna(0)
+def process_r2_actual_votes_at_address(r2_full_df):
+    """Aggregates actual R2 votes at the Address level."""
+    r2_finalists_votes = r2_full_df[r2_full_df['Candidate'].isin(R2_FINALISTS_FROM_R1)]
+    r2_address_actual = r2_finalists_votes.groupby(GEO_COLS_FOR_AGG + ['Candidate'])['Votes'].sum().unstack(fill_value=0)
     
-    # Add new voter contributions
-    gmina_expected['Expected_Nawrocki_R2'] += gmina_expected['Actual_New_Voters_Gmina'] * NEW_VOTER_DISTRIBUTION[CANDIDATE_NAWROCKI]
-    gmina_expected['Expected_Trzaskowski_R2'] += gmina_expected['Actual_New_Voters_Gmina'] * NEW_VOTER_DISTRIBUTION[CANDIDATE_TRZASKOWSKI]
-    
-    return gmina_expected
-
-
-def process_r2_actual_votes_at_gmina(r2_kandydaci_df):
-    """Aggregates actual R2 votes at Gmina level."""
-    if r2_kandydaci_df is None or r2_kandydaci_df.empty or 'Candidate' not in r2_kandydaci_df.columns:
-        return pd.DataFrame(columns=GEO_COLS_FOR_AGG + [f'Actual_{CANDIDATE_NAWROCKI}_R2', f'Actual_{CANDIDATE_TRZASKOWSKI}_R2'])
-
-    r2_finalists_votes = r2_kandydaci_df[r2_kandydaci_df['Candidate'].isin(R2_FINALISTS_FROM_R1)]
-    if r2_finalists_votes.empty:
-        return pd.DataFrame(columns=GEO_COLS_FOR_AGG + [f'Actual_{CANDIDATE_NAWROCKI}_R2', f'Actual_{CANDIDATE_TRZASKOWSKI}_R2'])
-
-    # Aggregate at Gmina level directly
-    # Ensure GEO_COLS_FOR_AGG are present in r2_finalists_votes
-    geo_cols_present = [col for col in GEO_COLS_FOR_AGG if col in r2_finalists_votes.columns]
-    if not geo_cols_present:
-        print("Error in process_r2_actual_votes_at_gmina: Missing geo columns for aggregation.")
-        return pd.DataFrame(columns=GEO_COLS_FOR_AGG + [f'Actual_{CANDIDATE_NAWROCKI}_R2', f'Actual_{CANDIDATE_TRZASKOWSKI}_R2'])
-
-    r2_gmina_actual = r2_finalists_votes.groupby(geo_cols_present + ['Candidate'])['Votes'].sum().unstack(fill_value=0)
-    
-    r2_gmina_actual.rename(columns={
+    r2_address_actual.rename(columns={
         CANDIDATE_NAWROCKI: f'Actual_{CANDIDATE_NAWROCKI}_R2',
         CANDIDATE_TRZASKOWSKI: f'Actual_{CANDIDATE_TRZASKOWSKI}_R2'
     }, inplace=True)
     
-    if f'Actual_{CANDIDATE_NAWROCKI}_R2' not in r2_gmina_actual.columns:
-        r2_gmina_actual[f'Actual_{CANDIDATE_NAWROCKI}_R2'] = 0.0
-    if f'Actual_{CANDIDATE_TRZASKOWSKI}_R2' not in r2_gmina_actual.columns:
-        r2_gmina_actual[f'Actual_{CANDIDATE_TRZASKOWSKI}_R2'] = 0.0
+    if f'Actual_{CANDIDATE_NAWROCKI}_R2' not in r2_address_actual.columns: r2_address_actual[f'Actual_{CANDIDATE_NAWROCKI}_R2'] = 0.0
+    if f'Actual_{CANDIDATE_TRZASKOWSKI}_R2' not in r2_address_actual.columns: r2_address_actual[f'Actual_{CANDIDATE_TRZASKOWSKI}_R2'] = 0.0
         
-    return r2_gmina_actual.reset_index()
+    return r2_address_actual.reset_index()
 
-
-def plot_and_save_results(df, filename="election_comparison_R2_GMINA_totals.png"):
-    # ... (Plotting function remains largely the same, just sums the Gmina-level data)
+def plot_and_save_results(df, filename="election_comparison_R2_ADDRESS_totals.png"):
     if df.empty:
         print("Cannot plot results, DataFrame is empty.")
         return
-    print("\n--- Plotting Results (Gmina Aggregated) ---")
-    actual_nawrocki_col = f'Actual_{CANDIDATE_NAWROCKI}_R2'
-    actual_trzaskowski_col = f'Actual_{CANDIDATE_TRZASKOWSKI}_R2'
-    if actual_nawrocki_col not in df.columns: df[actual_nawrocki_col] = 0.0
-    if actual_trzaskowski_col not in df.columns: df[actual_trzaskowski_col] = 0.0
-
+    print("\n--- Plotting Results (National Totals from Address Aggregation) ---")
     total_expected_nawrocki = df['Expected_Nawrocki_R2'].sum()
-    total_actual_nawrocki = df[actual_nawrocki_col].sum()
+    total_actual_nawrocki = df[f'Actual_{CANDIDATE_NAWROCKI}_R2'].sum()
     total_expected_trzaskowski = df['Expected_Trzaskowski_R2'].sum()
-    total_actual_trzaskowski = df[actual_trzaskowski_col].sum()
-
+    total_actual_trzaskowski = df[f'Actual_{CANDIDATE_TRZASKOWSKI}_R2'].sum()
     print(f"Total Expected Nawrocki: {total_expected_nawrocki:,.0f}")
     print(f"Total Actual Nawrocki: {total_actual_nawrocki:,.0f}")
     print(f"Total Expected Trzaskowski: {total_expected_trzaskowski:,.0f}")
     print(f"Total Actual Trzaskowski: {total_actual_trzaskowski:,.0f}")
-
-    # ... (rest of plotting is the same)
     candidates_plot = [CANDIDATE_NAWROCKI, CANDIDATE_TRZASKOWSKI]
     expected_votes_plot = [total_expected_nawrocki, total_expected_trzaskowski]
     actual_votes_plot = [total_actual_nawrocki, total_actual_trzaskowski]
-    plot_data = pd.DataFrame({
-        'Candidate': candidates_plot + candidates_plot,
-        'Vote_Type': ['Expected'] * len(candidates_plot) + ['Actual'] * len(candidates_plot),
-        'Total_Votes': expected_votes_plot + actual_votes_plot
-    })
-    plt.figure(figsize=(12, 7))
-    sns.set_style("whitegrid")
+    plot_data = pd.DataFrame({'Candidate': candidates_plot * 2, 'Vote_Type': ['Expected'] * 2 + ['Actual'] * 2, 'Total_Votes': expected_votes_plot + actual_votes_plot})
+    plt.figure(figsize=(12, 7)); sns.set_style("whitegrid")
     bar_plot = sns.barplot(x='Candidate', y='Total_Votes', hue='Vote_Type', data=plot_data, palette={"Expected": "skyblue", "Actual": "salmon"})
     for p in bar_plot.patches:
-        bar_plot.annotate(format(p.get_height(), ',.0f'), 
-                           (p.get_x() + p.get_width() / 2., p.get_height()), 
-                           ha = 'center', va = 'center', 
-                           xytext = (0, 9), 
-                           textcoords = 'offset points')
-    plt.title('National Total Votes (from Gmina Aggregation): Expected vs. Actual (Round 2)', fontsize=14)
-    plt.ylabel('Total Votes', fontsize=12)
-    plt.xlabel('Candidate', fontsize=12)
+        assert isinstance(p, Rectangle)
+        bar_plot.annotate(format(p.get_height(), ',.0f'), (p.get_x() + p.get_width() / 2., p.get_height()), ha = 'center', va = 'center', xytext = (0, 9), textcoords = 'offset points')
+    plt.title('National Total Votes (from Address-Level Aggregation): Expected vs. Actual (Round 2)', fontsize=14)
+    plt.ylabel('Total Votes', fontsize=12); plt.xlabel('Candidate', fontsize=12)
     plt.xticks(rotation=10, ha='right', fontsize=10); plt.yticks(fontsize=10)
     plt.legend(title='Vote Type'); plt.tight_layout()
     try:
         plt.savefig(filename); print(f"Plot saved to {filename}")
     except Exception as e: print(f"Error saving plot: {e}")
 
-
-# --- Main Execution ---
 def main():
-    print("Starting election analysis (Gmina Level Comparison)...")
-    loaded_data = load_and_prepare_data()
-    if loaded_data is None or any(df is None for df in loaded_data):
-        print("Critical Error: Data loading failed. Exiting.")
+    print("Starting election analysis (Address Level Comparison)...")
+    
+    # FIX: Unpack directly and then check for failure (None).
+    r1_full_df, r2_full_df = load_and_prepare_data()
+
+    # The load function returns (None, None) on failure. Check for this.
+    if r1_full_df is None or r2_full_df is None:
+        print("Critical Error: Data loading and preparation failed. Exiting.")
         return
-    r1_kandydaci_df, r1_podsumowanie_df, r2_kandydaci_df, r2_podsumowanie_df = loaded_data
-    print("Data loaded successfully.")
 
-    # 1. Calculate expected votes based on R1 voters (at station level initially)
-    expected_votes_station_df = process_r1_votes_for_expected(r1_kandydaci_df, r1_podsumowanie_df)
-    if expected_votes_station_df.empty:
-        print("Error: R1 data processing for expected votes resulted in an empty DataFrame. Exiting.")
-        return
-    print("Station-level R1 votes processed for expected R2 shares.")
+    # 1. Calculate expected votes from R1 transfers at the Address level.
+    address_expected_df = process_r1_and_calculate_expected_address_votes(r1_full_df)
+    print("Expected R2 votes from R1 transfers calculated at Address level.")
 
-    # 2. Calculate new voters at Gmina level
-    new_voters_gmina_df = calculate_new_voters_at_gmina(r1_podsumowanie_df, r2_podsumowanie_df)
-    if new_voters_gmina_df.empty:
-        print("Warning: Gmina-level new voter calculation resulted in an empty DataFrame.")
-    print("Gmina-level new voter contributions calculated.")
-
-    # 3. Aggregate station-level expected votes to Gmina and add new voter share
-    gmina_expected_df = aggregate_expected_votes_to_gmina(expected_votes_station_df, new_voters_gmina_df)
-    if gmina_expected_df.empty:
-        print("Error: Aggregating expected votes to Gmina resulted in an empty DataFrame. Exiting.")
-        return
-    print("Expected R2 votes aggregated to Gmina level and new voters added.")
+    # 2. Calculate new voters at the Address level.
+    new_voters_address_df = calculate_new_voters_at_address(r1_full_df, r2_full_df)
+    print("Address-level new voter contributions calculated.")
     
-    # 4. Process actual R2 votes at Gmina level
-    gmina_actual_df = process_r2_actual_votes_at_gmina(r2_kandydaci_df)
-    if gmina_actual_df.empty:
-        print("Warning: Processing actual R2 votes at Gmina level resulted in an empty DataFrame.")
-    print("Actual R2 votes aggregated to Gmina level.")
+    # 3. Process actual R2 votes at the Address level.
+    address_actual_df = process_r2_actual_votes_at_address(r2_full_df)
+    print("Actual R2 votes aggregated to Address level.")
 
-    # 5. Merge Gmina-level expected and actual data
-    # GEO_COLS_FOR_AGG = ['Wojewodztwo_Name', 'Powiat_MnpP_Name', 'Gmina_Name']
-    print(f"\n--- Debug: Before Gmina Merge ---")
-    print(f"gmina_expected_df columns: {gmina_expected_df.columns.tolist()}")
-    print(f"gmina_actual_df columns: {gmina_actual_df.columns.tolist()}")
+    # 4. Merge dataframes on the stable GEO_COLS_FOR_AGG key.
+    comparison_df = pd.merge(address_expected_df, new_voters_address_df, on=GEO_COLS_FOR_AGG, how='left')
     
-    comparison_gmina_df = pd.merge(gmina_expected_df, gmina_actual_df, on=GEO_COLS_FOR_AGG, how='outer') # Outer to keep all Gminy
+    comparison_df['Actual_New_Voters_Addr'] = comparison_df['Actual_New_Voters_Addr'].fillna(0)
+    comparison_df['Expected_Nawrocki_R2'] += comparison_df['Actual_New_Voters_Addr'] * NEW_VOTER_DISTRIBUTION[CANDIDATE_NAWROCKI]
+    comparison_df['Expected_Trzaskowski_R2'] += comparison_df['Actual_New_Voters_Addr'] * NEW_VOTER_DISTRIBUTION[CANDIDATE_TRZASKOWSKI]
+    print("New voter shares added to expected Address totals.")
     
-    # Fill NaNs that could result from outer merge or empty DFs
-    comparison_gmina_df['Expected_Nawrocki_R2'] = comparison_gmina_df['Expected_Nawrocki_R2'].fillna(0.0)
-    comparison_gmina_df['Expected_Trzaskowski_R2'] = comparison_gmina_df['Expected_Trzaskowski_R2'].fillna(0.0)
-    comparison_gmina_df[f'Actual_{CANDIDATE_NAWROCKI}_R2'] = comparison_gmina_df[f'Actual_{CANDIDATE_NAWROCKI}_R2'].fillna(0.0)
-    comparison_gmina_df[f'Actual_{CANDIDATE_TRZASKOWSKI}_R2'] = comparison_gmina_df[f'Actual_{CANDIDATE_TRZASKOWSKI}_R2'].fillna(0.0)
-    comparison_gmina_df['R1_Total_Valid_Votes_Gmina'] = comparison_gmina_df.get('R1_Total_Valid_Votes_Gmina', 0.0).fillna(0.0)
-    comparison_gmina_df['R2_Total_Valid_Votes_Gmina'] = comparison_gmina_df.get('R2_Total_Valid_Votes_Gmina', 0.0).fillna(0.0)
+    comparison_df = pd.merge(comparison_df, address_actual_df, on=GEO_COLS_FOR_AGG, how='outer')
+    print("Address-level expected and actual R2 votes merged.")
 
-    print("Gmina-level expected and actual R2 votes merged.")
+    # 5. Clean up NaNs from the outer merge and calculate differences.
+    float_cols_to_fill = ['Expected_Nawrocki_R2', 'Expected_Trzaskowski_R2', f'Actual_{CANDIDATE_NAWROCKI}_R2', f'Actual_{CANDIDATE_TRZASKOWSKI}_R2', 'R1_Total_Valid_Votes_Addr', 'R2_Total_Valid_Votes_Addr', 'Actual_New_Voters_Addr']
+    for col in float_cols_to_fill:
+        if col in comparison_df.columns:
+            comparison_df[col] = comparison_df[col].fillna(0.0)
 
-    # 6. Calculate Differences
-    comparison_gmina_df['Diff_Nawrocki'] = comparison_gmina_df[f'Actual_{CANDIDATE_NAWROCKI}_R2'] - comparison_gmina_df['Expected_Nawrocki_R2']
-    comparison_gmina_df['Diff_Trzaskowski'] = comparison_gmina_df[f'Actual_{CANDIDATE_TRZASKOWSKI}_R2'] - comparison_gmina_df['Expected_Trzaskowski_R2']
-    print("Differences calculated at Gmina level.")
+    comparison_df['Diff_Nawrocki'] = comparison_df[f'Actual_{CANDIDATE_NAWROCKI}_R2'] - comparison_df['Expected_Nawrocki_R2']
+    comparison_df['Diff_Trzaskowski'] = comparison_df[f'Actual_{CANDIDATE_TRZASKOWSKI}_R2'] - comparison_df['Expected_Trzaskowski_R2']
+    print("Differences calculated at Address level.")
 
-    final_columns_gmina = GEO_COLS_FOR_AGG + \
-                    ['R1_Total_Valid_Votes_Gmina', 'R2_Total_Valid_Votes_Gmina', 'Actual_New_Voters_Gmina',
-                     'Expected_Nawrocki_R2', f'Actual_{CANDIDATE_NAWROCKI}_R2', 'Diff_Nawrocki',
-                     'Expected_Trzaskowski_R2', f'Actual_{CANDIDATE_TRZASKOWSKI}_R2', 'Diff_Trzaskowski']
-    
-    for col in final_columns_gmina: # Ensure columns exist
-        if col not in comparison_gmina_df.columns:
-            comparison_gmina_df[col] = 0.0 if "Votes" in col or "Actual_" in col or "Expected_" in col or "Diff_" in col else "N/A"
+    # 6. Prepare final report
+    final_columns = GEO_COLS_FOR_AGG + ['R1_Total_Valid_Votes_Addr', 'R2_Total_Valid_Votes_Addr', 'Actual_New_Voters_Addr', 'Expected_Nawrocki_R2', f'Actual_{CANDIDATE_NAWROCKI}_R2', 'Diff_Nawrocki', 'Expected_Trzaskowski_R2', f'Actual_{CANDIDATE_TRZASKOWSKI}_R2', 'Diff_Trzaskowski']
+    final_report_df = comparison_df.reindex(columns=final_columns).fillna(0.0)
+    float_cols_to_round = [c for c in final_report_df.columns if c not in GEO_COLS_FOR_AGG]
+    final_report_df[float_cols_to_round] = final_report_df[float_cols_to_round].round(2)
 
-    final_report_gmina_df = comparison_gmina_df[final_columns_gmina].copy()
-    
-    float_cols_to_round = ['Expected_Nawrocki_R2', 'Diff_Nawrocki', 
-                           'Expected_Trzaskowski_R2', 'Diff_Trzaskowski',
-                           f'Actual_{CANDIDATE_NAWROCKI}_R2', f'Actual_{CANDIDATE_TRZASKOWSKI}_R2',
-                           'R1_Total_Valid_Votes_Gmina', 'R2_Total_Valid_Votes_Gmina', 'Actual_New_Voters_Gmina']
-    for col in float_cols_to_round:
-        if col in final_report_gmina_df.columns:
-            final_report_gmina_df[col] = final_report_gmina_df[col].round(2)
+    print("\n--- Final Comparison Report (Address Level - First 5 rows) ---")
+    print(final_report_df.head())
 
-    print("\n--- Final Comparison Report (Gmina Level - First 5 rows) ---")
-    if not final_report_gmina_df.empty:
-        print(final_report_gmina_df.head())
-    else:
-        print("Final Gmina report DataFrame is empty.")
-
-    print("\n--- Summary Statistics for Gmina Differences ---")
-    diff_stats_cols = ['Diff_Nawrocki', 'Diff_Trzaskowski']
-    if not final_report_gmina_df.empty and all(c in final_report_gmina_df.columns for c in diff_stats_cols):
-        print(final_report_gmina_df[diff_stats_cols].describe())
-    else:
-        print("Difference columns not available for summary or Gmina DataFrame is empty.")
+    print("\n--- Summary Statistics for Address-Level Differences ---")
+    print(final_report_df[['Diff_Nawrocki', 'Diff_Trzaskowski']].describe())
         
-    print("\nAnalysis complete (Gmina Level).")
+    print("\nAnalysis complete (Address Level).")
     
-    final_report_gmina_df.to_csv("election_comparison_GMINA_level.csv", index=False)
-    print("Final report saved to election_comparison_GMINA_level.csv")
+    final_report_df.to_csv("election_comparison_ADDRESS_level.csv", index=False)
+    print("Final report saved to election_comparison_ADDRESS_level.csv")
 
-    plot_and_save_results(final_report_gmina_df) # Plot will sum Gmina totals
+    plot_and_save_results(final_report_df)
 
 if __name__ == "__main__":
     main()
