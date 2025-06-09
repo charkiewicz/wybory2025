@@ -1,0 +1,101 @@
+[
+    {
+        "title": "Overall All Votes",
+        "total_vote_entries_analyzed": 63174,
+        "observed_counts": {
+            "0": 6353,
+            "1": 6306,
+            "2": 6362,
+            "3": 6231,
+            "4": 6359,
+            "5": 6449,
+            "6": 6341,
+            "7": 6339,
+            "8": 6220,
+            "9": 6214
+        },
+        "observed_frequencies": {
+            "0": 0.10056352296830975,
+            "1": 0.09981954601576598,
+            "2": 0.10070598664007345,
+            "3": 0.09863234875106848,
+            "4": 0.10065849874948554,
+            "5": 0.10208313546712255,
+            "6": 0.10037357140595815,
+            "7": 0.10034191281223288,
+            "8": 0.09845822648557952,
+            "9": 0.09836325070440372
+        },
+        "expected_frequency_per_digit": 0.1,
+        "chi_squared_statistic": 8.089150599930353,
+        "chi_squared_p_value": 0.5251875898465266,
+        "chi_squared_conclusion": "P-value >= 0.05. Cannot reject the null hypothesis; the observed distribution is consistent with a uniform distribution.",
+        "plot_path": "data/last_digit_analysis_results\\last_digit_distribution_overall_all_votes.png"
+    },
+    {
+        "title": "Candidate_NAWROCKI_Karol_Tadeusz",
+        "total_vote_entries_analyzed": 31587,
+        "observed_counts": {
+            "0": 3214,
+            "1": 3129,
+            "2": 3129,
+            "3": 3113,
+            "4": 3128,
+            "5": 3284,
+            "6": 3218,
+            "7": 3192,
+            "8": 3077,
+            "9": 3103
+        },
+        "observed_frequencies": {
+            "0": 0.10175072023300726,
+            "1": 0.09905973976635958,
+            "2": 0.09905973976635958,
+            "3": 0.0985532022667553,
+            "4": 0.09902808117263431,
+            "5": 0.10396682179377592,
+            "6": 0.10187735460790831,
+            "7": 0.10105423117105138,
+            "8": 0.09741349289264571,
+            "9": 0.09823661632950265
+        },
+        "expected_frequency_per_digit": 0.1,
+        "chi_squared_statistic": 12.016367492955963,
+        "chi_squared_p_value": 0.21238815649725767,
+        "chi_squared_conclusion": "P-value >= 0.05. Cannot reject the null hypothesis; the observed distribution is consistent with a uniform distribution.",
+        "plot_path": "data/last_digit_analysis_results\\per_candidate\\last_digit_distribution_candidate_nawrocki_karol_tadeusz.png"
+    },
+    {
+        "title": "Candidate_TRZASKOWSKI_Rafa_Kazimierz",
+        "total_vote_entries_analyzed": 31587,
+        "observed_counts": {
+            "0": 3139,
+            "1": 3177,
+            "2": 3233,
+            "3": 3118,
+            "4": 3231,
+            "5": 3165,
+            "6": 3123,
+            "7": 3147,
+            "8": 3143,
+            "9": 3111
+        },
+        "observed_frequencies": {
+            "0": 0.09937632570361224,
+            "1": 0.10057935226517238,
+            "2": 0.10235223351378732,
+            "3": 0.09871149523538164,
+            "4": 0.10228891632633678,
+            "5": 0.10019944914046917,
+            "6": 0.09886978820400798,
+            "7": 0.09962959445341438,
+            "8": 0.09950296007851331,
+            "9": 0.09848988507930478
+        },
+        "expected_frequency_per_digit": 0.1,
+        "chi_squared_statistic": 5.4136511856143334,
+        "chi_squared_p_value": 0.7968622949192489,
+        "chi_squared_conclusion": "P-value >= 0.05. Cannot reject the null hypothesis; the observed distribution is consistent with a uniform distribution.",
+        "plot_path": "data/last_digit_analysis_results\\per_candidate\\last_digit_distribution_candidate_trzaskowski_rafa_kazimierz.png"
+    }
+]

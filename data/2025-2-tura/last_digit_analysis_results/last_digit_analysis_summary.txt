@@ -1,0 +1,57 @@
+--- Analysis for: Overall All Votes ---
+Total vote entries analyzed: 63174
+Observed Frequencies:
+  Digit 0: 0.1006 (Count: 6353)
+  Digit 1: 0.0998 (Count: 6306)
+  Digit 2: 0.1007 (Count: 6362)
+  Digit 3: 0.0986 (Count: 6231)
+  Digit 4: 0.1007 (Count: 6359)
+  Digit 5: 0.1021 (Count: 6449)
+  Digit 6: 0.1004 (Count: 6341)
+  Digit 7: 0.1003 (Count: 6339)
+  Digit 8: 0.0985 (Count: 6220)
+  Digit 9: 0.0984 (Count: 6214)
+Expected Frequency per Digit: 0.10
+Chi-squared Statistic: 8.089150599930353
+Chi-squared P-value: 0.5251875898465266
+Chi-squared Conclusion: P-value >= 0.05. Cannot reject the null hypothesis; the observed distribution is consistent with a uniform distribution.
+Plot saved to: data/last_digit_analysis_results\last_digit_distribution_overall_all_votes.png
+
+--- Analysis for: Candidate_NAWROCKI_Karol_Tadeusz ---
+Total vote entries analyzed: 31587
+Observed Frequencies:
+  Digit 0: 0.1018 (Count: 3214)
+  Digit 1: 0.0991 (Count: 3129)
+  Digit 2: 0.0991 (Count: 3129)
+  Digit 3: 0.0986 (Count: 3113)
+  Digit 4: 0.0990 (Count: 3128)
+  Digit 5: 0.1040 (Count: 3284)
+  Digit 6: 0.1019 (Count: 3218)
+  Digit 7: 0.1011 (Count: 3192)
+  Digit 8: 0.0974 (Count: 3077)
+  Digit 9: 0.0982 (Count: 3103)
+Expected Frequency per Digit: 0.10
+Chi-squared Statistic: 12.016367492955963
+Chi-squared P-value: 0.21238815649725767
+Chi-squared Conclusion: P-value >= 0.05. Cannot reject the null hypothesis; the observed distribution is consistent with a uniform distribution.
+Plot saved to: data/last_digit_analysis_results\per_candidate\last_digit_distribution_candidate_nawrocki_karol_tadeusz.png
+
+--- Analysis for: Candidate_TRZASKOWSKI_Rafa_Kazimierz ---
+Total vote entries analyzed: 31587
+Observed Frequencies:
+  Digit 0: 0.0994 (Count: 3139)
+  Digit 1: 0.1006 (Count: 3177)
+  Digit 2: 0.1024 (Count: 3233)
+  Digit 3: 0.0987 (Count: 3118)
+  Digit 4: 0.1023 (Count: 3231)
+  Digit 5: 0.1002 (Count: 3165)
+  Digit 6: 0.0989 (Count: 3123)
+  Digit 7: 0.0996 (Count: 3147)
+  Digit 8: 0.0995 (Count: 3143)
+  Digit 9: 0.0985 (Count: 3111)
+Expected Frequency per Digit: 0.10
+Chi-squared Statistic: 5.4136511856143334
+Chi-squared P-value: 0.7968622949192489
+Chi-squared Conclusion: P-value >= 0.05. Cannot reject the null hypothesis; the observed distribution is consistent with a uniform distribution.
+Plot saved to: data/last_digit_analysis_results\per_candidate\last_digit_distribution_candidate_trzaskowski_rafa_kazimierz.png
+

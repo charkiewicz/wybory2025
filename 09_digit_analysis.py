@@ -9,7 +9,7 @@ import json
 
 # --- 0. Configuration ---
 # Input file with candidate-level votes
-CANDIDATE_VOTES_FILE = 'data/polska_prezydent2025_obkw_kandydaci_NATIONAL_FINAL.csv'
+CANDIDATE_VOTES_FILE = 'data/polska_prezydent2025_tura2_obkw_kandydaci_NATIONAL_FINAL.csv'
 
 # Output directory (can be the same as before or a new one)
 LAST_DIGIT_ANALYSIS_OUTPUT_DIR = "data/last_digit_analysis_results"

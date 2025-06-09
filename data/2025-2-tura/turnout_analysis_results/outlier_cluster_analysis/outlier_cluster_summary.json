@@ -1,0 +1,7 @@
+{
+    "zscore_outliers_count": 523,
+    "modified_zscore_outliers_count": 145,
+    "isolation_forest_outliers_count": 948,
+    "dbscan_outliers_count": 35,
+    "dbscan_num_clusters": 2
+}

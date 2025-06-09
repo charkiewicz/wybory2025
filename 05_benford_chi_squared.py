@@ -6,7 +6,7 @@ import os
 from collections import Counter
 
 # --- Configuration ---
-CSV_FILE_PATH = 'data/polska_prezydent2025_obkw_kandydaci_NATIONAL_FINAL.csv'
+CSV_FILE_PATH = 'data/polska_prezydent2025_tura2_obkw_kandydaci_NATIONAL_FINAL.csv'
 OUTPUT_RESULTS_FILE = 'data/benford_tests_results.txt' # Renamed for clarity
 ALPHA = 0.05 # Significance level
 MIN_DATA_POINTS_FOR_BENFORD = 30 # Minimum number of first digits for a somewhat reliable test

@@ -5,7 +5,7 @@ import re # For cleaning filenames
 
 # --- Configuration ---
 # Assuming your CSV file is named 'election_data.csv' in the same directory as the script
-CSV_FILE_PATH = 'data/polska_prezydent2025_obkw_kandydaci_NATIONAL_FINAL.csv'
+CSV_FILE_PATH = 'data/polska_prezydent2025_tura2_obkw_kandydaci_NATIONAL_FINAL.csv'
 OUTPUT_DIR = 'data/histograms/'
 
 # --- Helper function to sanitize filenames ---

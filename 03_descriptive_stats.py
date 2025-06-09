@@ -3,7 +3,7 @@ import numpy as np # For NaN if needed, though pandas handles it well
 from scipy import stats as sp_stats # For a potentially more robust mode calculation
 
 # --- Configuration ---
-CSV_FILE_PATH = 'data/polska_prezydent2025_obkw_kandydaci_NATIONAL_FINAL.csv'
+CSV_FILE_PATH = 'data/polska_prezydent2025_tura2_obkw_kandydaci_NATIONAL_FINAL.csv'
 OUTPUT_STATS_FILE_PATH = 'data/candidate_descriptive_statistics.csv' # Output file
 
 # --- Helper function for mode ---

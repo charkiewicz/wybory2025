@@ -5,7 +5,7 @@ import os
 import re # For cleaning filenames
 
 # --- Configuration ---
-CSV_FILE_PATH = 'data/polska_prezydent2025_obkw_kandydaci_NATIONAL_FINAL.csv'
+CSV_FILE_PATH = 'data/polska_prezydent2025_tura2_obkw_kandydaci_NATIONAL_FINAL.csv'
 OUTPUT_DIR = 'data/plots/'
 
 # --- Helper function to sanitize filenames ---

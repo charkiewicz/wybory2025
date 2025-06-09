@@ -7,7 +7,7 @@ from collections import Counter
 import math
 
 # --- Configuration ---
-CSV_FILE_PATH = 'data/polska_prezydent2025_obkw_kandydaci_NATIONAL_FINAL.csv' # Or your actual file path like 'data/polska_prezydent2025_obkw_kandydaci_NATIONAL_FINAL.csv'
+CSV_FILE_PATH = 'data/polska_prezydent2025_tura2_obkw_kandydaci_NATIONAL_FINAL.csv' # Or your actual file path like 'data/polska_prezydent2025_obkw_kandydaci_NATIONAL_FINAL.csv'
 OUTPUT_PLOT_DIR = 'data/benford_plots/'
 MIN_DATA_POINTS_FOR_PLOTTING = 0 # Minimum number of first digits for meaningful plots
 

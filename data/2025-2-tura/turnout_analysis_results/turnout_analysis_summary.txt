@@ -1,0 +1,35 @@
+--- Turnout Analysis Summary ---
+
+=== Data Overview ===
+Input CSV: data/polska_prezydent2025_tura2_obkw_podsumowanie_NATIONAL_FINAL.csv
+Initial shape of DataFrame: (31627, 28)
+Shape after cleaning (valid 'liczba_uprawnionych'): (31587, 29)
+Number of rows removed during cleaning: 40
+
+=== Descriptive Statistics for Turnout Percentage ===
+count    31587.000000
+mean        68.835489
+std          9.783156
+min          0.000000
+25%         63.879778
+50%         69.544592
+75%         74.849697
+max        100.000000
+Median Turnout: 69.54%
+
+=== Normality Test for Turnout Percentage (Shapiro-Wilk) ===
+Note: For N > 5000, computed p-value may be less accurate or test slow. Using a random sample of 5000.
+Sample size used for test: 5000
+Statistic: 0.9483
+P-value: 0.0000
+Conclusion (alpha=0.05): Sample does not look normally distributed (reject H0)
+
+=== Normality Test for Turnout Percentage (Kolmogorov-Smirnov) ===
+Statistic: 0.0570
+P-value: 0.0000
+Conclusion (alpha=0.05): Sample does not look normally distributed (reject H0)
+
+=== Saved Files ===
+Cleaned data with turnout: data/turnout_analysis_results\data_with_turnout.csv
+Turnout distribution histogram: data/turnout_analysis_results\turnout_distribution_histogram.png
+Turnout vs Valid Votes scatter plot: data/turnout_analysis_results\turnout_vs_valid_votes_scatter.png

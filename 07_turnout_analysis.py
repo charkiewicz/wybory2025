@@ -11,7 +11,7 @@ OUTPUT_DIR = "data/turnout_analysis_results"
 os.makedirs(OUTPUT_DIR, exist_ok=True) # Create directory if it doesn't exist
 
 # --- 1. Load Data ---
-CSV_FILE_PATH = 'data/polska_prezydent2025_obkw_podsumowanie_NATIONAL_FINAL.csv'
+CSV_FILE_PATH = 'data/polska_prezydent2025_tura2_obkw_podsumowanie_NATIONAL_FINAL.csv'
 try:
     df = pd.read_csv(CSV_FILE_PATH)
 except FileNotFoundError:
@@ -70,7 +70,7 @@ results_summary['descriptive_statistics']['median'] = median_turnout # Add media
 
 # Histogram or Density Plot
 plt.figure(figsize=(12, 7)) # Slightly larger for better saving quality
-sns.histplot(df_cleaned['Turnout_Percentage'], kde=True, bins=50) # More bins for a larger dataset
+sns.histplot(x=df_cleaned['Turnout_Percentage'], kde=True, bins=50) # More bins for a larger dataset
 plt.title('Distribution of Turnout Percentage per Voting Station')
 plt.xlabel('Turnout Percentage (%)')
 plt.ylabel('Frequency (Number of Voting Stations)')
